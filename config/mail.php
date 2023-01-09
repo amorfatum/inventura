@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'failover'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,6 +51,9 @@ return [
 
         'mailgun' => [
             'transport' => 'mailgun',
+	    'domain' => env('MAILGUN_DOMAIN'),
+	    'secret' => env('MAILGUN_SECRET'),
+	    'endpoint' => env('MAILGUN_ENDPOINT', 'api.eu.mailgun.net'),
         ],
 
         'postmark' => [
@@ -74,6 +77,7 @@ return [
         'failover' => [
             'transport' => 'failover',
             'mailers' => [
+		'mailgun',
                 'smtp',
                 'log',
             ],
