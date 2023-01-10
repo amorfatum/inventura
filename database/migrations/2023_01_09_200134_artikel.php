@@ -13,7 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('artikels', function (Blueprint $table) {
+            $table->id();
+            $table->integer('lieferantenId');
+            $table->string('artikelName');
+            $table->integer('anzahl');
+            $table->integer('preis');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+        });
     }
 
     /**

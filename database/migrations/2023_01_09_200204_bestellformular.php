@@ -13,7 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('bestellformulars', function (Blueprint $table) {
+            $table->id();
+            $table->integer('artikelId')->nullable(false);
+            $table->integer('lieferantenId');
+            $table->integer('anzahl');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+        });
     }
 
     /**
