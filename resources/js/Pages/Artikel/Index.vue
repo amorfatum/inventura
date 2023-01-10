@@ -1,19 +1,29 @@
 <script setup>
+import { ref } from "vue";
+import { watch } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/inertia-vue3';
-import { useForm } from '@inertiajs/inertia-vue3'
 
-const form = useForm({
-    artikelId: '',
+const props = defineProps({
+    artikel:{
+        type: Object,
+        default: () => ({}),
+    },
 });
 
-defineProps({
-    artikel: Array,
-});
+let search = ref(props.artikel);
 
-const submit = () => {
-    form.post(route('artikel.show'));
-};
+watch(search, (value) => {
+  Inertia.get(
+    "/artikel",
+    { search: value },
+    {
+      preserveState: true,
+      replace: true,
+    }
+  );
+}); 
 
 </script>
 
@@ -26,14 +36,17 @@ const submit = () => {
         </template>
 
         <div>
-            <form action="" style="background-color: lightblue; width: 50%; height: 100px; padding: 30px;" @submit.prevent="form.post(route('artikel.show'))">
-                <input v-model="form.artikelId" type="search" name="artikelId" id="artikelId">
-                <button type="submit" class="" style="background-color: white; width: 100px; padding: 5px; margin: 2px 15px 2px 15px">Scan</button>
-            </form>
+            <div class="mb-2">
+                <input
+                    type="text"
+                    v-model="search"
+                    placeholder="Search..."
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 p-2.5"
+                />
+            </div>
+            <button type="submit" class="" style="background-color: white; width: 100px; padding: 5px; margin: 2px 15px 2px 15px">Scan</button>
         </div>
-
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6" v-for="art in artikel">
                 <table>
                     <tr>
                         <th>ID</th>
@@ -42,15 +55,14 @@ const submit = () => {
                         <th>Stück</th>
                         <th>Preis</th>
                     </tr>
-                    <tr>
-                        <td>{{art.id}}</td>
-                        <td>{{art.lieferantenId}}</td>
-                        <td>{{art.artikelName}}</td>
-                        <td>{{art.anzahl}}</td>
-                        <td>{{art.preis}}</td>
+                    <tr v-for="artikel in artikel.data">
+                        <td>{{artikel.id}}</td>
+                        <td>{{artikel.lieferantenId}}</td>
+                        <td>{{artikel.artikelName}}</td>
+                        <td>{{artikel.anzahl}}</td>
+                        <td>{{artikel.preis}}</td>
                     </tr>
                 </table>
-            </div>
         </div>
     </AuthenticatedLayout>
 </template>

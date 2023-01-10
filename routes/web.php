@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ArtikelController;
+use App\Http\Controllers\BestellformularController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,7 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/artikel', [ArtikelController::class, 'index'])->name('artikel.index');
-    Route::post('/artikel/show', [ArtikelController::class, 'index'])->name('artikel.show');
+    Route::get('/bestellformular', [BestellformularController::class, 'index'])->name('bestellformular.index');
+    Route::post('/bestellformular', [BestellformularController::class, 'store'])->name('bestellformular.store');
 });
 
 require __DIR__.'/auth.php';

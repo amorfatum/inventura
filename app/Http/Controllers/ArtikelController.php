@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -20,9 +20,16 @@ class ArtikelController extends Controller
      */
     public function index(Request $request)
     {
-        return Inertia::render('Artikel/Index', [
-            'artikel' => Artikel::all(),
-        ]);
+        return Inertia::render(
+            'Artikel/Index',
+            [
+                'artikel' => Artikel::query()
+                    ->when(Request::input('search'), function ($query, $search) {
+                        $query->where('id', 'like', $search);
+                    })->paginate(8)
+                    ->withQueryString(),
+            ]
+        );
     }
 
     /**
@@ -78,12 +85,15 @@ class ArtikelController extends Controller
      */
     public function show(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'artikelId' => 'required',
-        ]);
-
-        return Inertia::render('Artikel/Show', [
-            'artikel' => Artikel::whereLike('artikelId', $request->artikelId),
-        ]);
+        return Inertia::render(
+            'Artikel/Show',
+            [
+                'artikel' => Artikel::query()
+                    ->when(Request::input('artikelId'), function ($query, $search) {
+                        $query->where('artikelId', 'like', '%' . $search . '%');
+                    })->paginate(8)
+                    ->withQueryString(),
+            ]
+        );
     }
 }
